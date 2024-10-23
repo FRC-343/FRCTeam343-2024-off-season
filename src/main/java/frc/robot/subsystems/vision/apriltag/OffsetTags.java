@@ -1,15 +1,12 @@
 package frc.robot.subsystems.vision.apriltag;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Constants.PathPlannerConstants;
+// import frc.robot.Constants.PathPlannerConstants;
 import frc.robot.VisionConstants;
 import frc.robot.bobot_state.BobotState;
 import frc.robot.subsystems.vision.VisionSubsystem.TargetWithSource;
@@ -99,15 +96,15 @@ public enum OffsetTags {
     return getOffsetPoseFrom(pose);
   }
 
-  public Command getDeferredCommand() {
-    return Commands.deferredProxy(
-        () ->
-            AutoBuilder.pathfindToPose(
-                getOffsetPose().toPose2d(),
-                PathPlannerConstants.DEFAULT_PATH_CONSTRAINTS,
-                0.0,
-                0.0));
-  }
+  // public Command getDeferredCommand() {
+  //   return Commands.deferredProxy(
+  //       () ->
+  //           AutoBuilder.pathfindToPose(
+  //               getOffsetPose().toPose2d(),
+  //               PathPlannerConstants.DEFAULT_PATH_CONSTRAINTS,
+  //               0.0,
+  //               0.0));
+  // }
 
   public Pose3d getPose() {
     return VisionConstants.FIELD_LAYOUT.getTagPose(getId()).get();

@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.RobotBase;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -37,7 +38,7 @@ public final class Constants {
     private static Mode kfakeMode = Mode.SIM;
 
     public static Mode getMode() {
-      return Mode.SIM;
+      return RobotBase.isReal() ? Mode.REAL : kfakeMode;
     }
   }
 
