@@ -2,7 +2,7 @@ package frc.robot.subsystems.vision.object_detection;
 
 import frc.robot.VisionConstants.VisionSource;
 import frc.robot.subsystems.vision.apriltag.DuplicateTracker;
-import frc.utils.TimeSinceConditionTracker;
+import frc.util.TimeSinceConditionTracker;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 

@@ -22,7 +22,7 @@ import frc.robot.subsystems.vision.object_detection.ObjectDetectionIO;
 import frc.robot.subsystems.vision.object_detection.ObjectDetectionIOInputsAutoLogged;
 import frc.robot.subsystems.vision.object_detection.ObjectDetectionPhoton;
 import frc.robot.subsystems.vision.object_detection.ObjectDetectionPhotonSim;
-import frc.utils.VirtualSubsystem;
+import frc.util.VirtualSubsystem;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

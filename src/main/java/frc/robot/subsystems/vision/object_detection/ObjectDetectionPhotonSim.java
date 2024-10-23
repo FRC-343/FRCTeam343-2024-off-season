@@ -7,7 +7,7 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.VisionConstants;
 import frc.robot.VisionConstants.VisionSource;
 import frc.robot.subsystems.vision.apriltag.DuplicateTracker;
-import frc.utils.TimeSinceConditionTracker;
+import frc.util.TimeSinceConditionTracker;
 import org.photonvision.PhotonCamera;
 import org.photonvision.estimation.TargetModel;
 import org.photonvision.simulation.PhotonCameraSim;

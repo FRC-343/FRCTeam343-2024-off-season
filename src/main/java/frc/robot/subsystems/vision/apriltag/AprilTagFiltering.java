@@ -3,7 +3,7 @@ package frc.robot.subsystems.vision.apriltag;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.VisionConstants;
-import frc.utils.GarageUtils;
+import frc.util.GarageUtils;
 import java.util.List;
 import java.util.Set;
 import org.photonvision.targeting.PhotonPipelineResult;
