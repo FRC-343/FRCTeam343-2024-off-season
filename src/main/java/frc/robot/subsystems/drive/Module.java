@@ -57,8 +57,10 @@ public class Module {
   /**
    * Update inputs without running the rest of the periodic logic. This is useful since these
    * updates need to be properly thread-locked.
+   *
+   * @param m_moduleInputs
    */
-  public void updateInputs() {
+  public void updateInputs(ModuleIOInputsAutoLogged m_moduleInputs) {
     io.updateInputs(inputs);
   }
 

@@ -14,6 +14,8 @@
 package frc.robot.subsystems.drive;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ModuleIO {
@@ -33,6 +35,9 @@ public interface ModuleIO {
     public double[] odometryTimestamps = new double[] {};
     public double[] odometryDrivePositionsRad = new double[] {};
     public Rotation2d[] odometryTurnPositions = new Rotation2d[] {};
+
+    public SwerveModuleState state = new SwerveModuleState();
+    public SwerveModulePosition position = new SwerveModulePosition();
   }
 
   /** Updates the set of loggable inputs. */
@@ -49,4 +54,6 @@ public interface ModuleIO {
 
   /** Enable or disable brake mode on the turn motor. */
   public default void setTurnBrakeMode(boolean enable) {}
+
+  public default void setDesiredState(SwerveModuleState desiredState) {}
 }

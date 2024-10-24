@@ -49,7 +49,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Flywheel flywheel;
-  public final VisionSubsystem m_vision;
+  public final VisionSubsystem m_vision = new VisionSubsystem();
   private final BobotState m_BobotState;
 
   // Controller
@@ -79,10 +79,11 @@ public class RobotContainer {
                 new ModuleIOTalonFX(0),
                 new ModuleIOTalonFX(1),
                 new ModuleIOTalonFX(2),
-                new ModuleIOTalonFX(3));
+                new ModuleIOTalonFX(3),
+                m_vision::pollLatestVisionMeasurement);
         flywheel = new Flywheel(new FlywheelIOTalonFX());
         m_BobotState = new BobotState();
-        m_vision = new VisionSubsystem();
+        // m_vision = new VisionSubsystem();
 
         break;
 
@@ -94,10 +95,11 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim(),
-                new ModuleIOSim());
+                new ModuleIOSim(),
+                m_vision::pollLatestVisionMeasurement);
         flywheel = new Flywheel(new FlywheelIOSim());
         m_BobotState = new BobotState();
-        m_vision = new VisionSubsystem();
+        // m_vision = new VisionSubsystem();
 
         break;
 
@@ -109,10 +111,11 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},
-                new ModuleIO() {});
+                new ModuleIO() {},
+                m_vision::pollLatestVisionMeasurement);
         flywheel = new Flywheel(new FlywheelIO() {});
         m_BobotState = new BobotState();
-        m_vision = new VisionSubsystem();
+        // m_vision = new VisionSubsystem();
         break;
     }
 
