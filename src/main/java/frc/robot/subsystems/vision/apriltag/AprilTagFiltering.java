@@ -3,7 +3,7 @@ package frc.robot.subsystems.vision.apriltag;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.VisionConstants;
-import frc.util.GarageUtils;
+// import frc.util.GarageUtils;
 import java.util.List;
 import java.util.Set;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -60,7 +60,7 @@ public class AprilTagFiltering {
 
   /** Get IDs we're allowed to read at the time */
   public static Set<Integer> getAllowedIDs() {
-    boolean isBlueAlliance = GarageUtils.isBlueAlliance();
+    boolean isBlueAlliance = true; // DriverStation.getAlliance().i;
 
     boolean isAutonomous = DriverStation.isAutonomous();
 

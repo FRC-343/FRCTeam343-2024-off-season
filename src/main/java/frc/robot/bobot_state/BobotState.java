@@ -3,6 +3,7 @@ package frc.robot.bobot_state;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.VisionConstants;
 import frc.robot.bobot_state.TargetAngleTrackers.NoteAngleTracker;
@@ -13,7 +14,7 @@ import frc.robot.bobot_state.TargetAngleTrackers.SpeakerAngleTracker;
 // import frc.robot.bobot_state.interpolation.TargetInterpolator;
 import frc.robot.subsystems.vision.VisionSubsystem.TargetWithSource;
 import frc.robot.subsystems.vision.apriltag.OffsetTags;
-import frc.util.GarageUtils;
+// import frc.util.GarageUtils;
 import frc.util.VirtualSubsystem;
 import java.util.HashSet;
 import java.util.Optional;
@@ -63,7 +64,7 @@ public class BobotState extends VirtualSubsystem {
     return new Trigger(
         () -> {
           double bumperishSizedOffset = Units.inchesToMeters(36) / 2.0;
-          if (GarageUtils.isBlueAlliance()) {
+          if (DriverStation.getAlliance().isPresent()) {
             return robotPose.getX() - bumperishSizedOffset < VisionConstants.RED_LINE_X;
           } else {
             return robotPose.getX() + bumperishSizedOffset > VisionConstants.BLUE_LINE_X;

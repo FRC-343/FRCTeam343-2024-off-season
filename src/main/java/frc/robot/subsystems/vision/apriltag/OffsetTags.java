@@ -13,7 +13,7 @@ import frc.robot.Constants.PathPlannerConstants;
 import frc.robot.VisionConstants;
 import frc.robot.bobot_state.BobotState;
 import frc.robot.subsystems.vision.VisionSubsystem.TargetWithSource;
-import frc.util.GarageUtils;
+// import frc.util.GarageUtils;
 import java.util.Optional;
 
 public enum OffsetTags {
@@ -86,7 +86,8 @@ public enum OffsetTags {
   }
 
   public Pose3d getOffsetPose() {
-    return GarageUtils.isRedAlliance() ? getRedOffsetPose() : getBlueOffsetPose();
+    return getBlueOffsetPose(); // GarageUtils.isRedAlliance() ? getRedOffsetPose() :
+    // getBlueOffsetPose();
   }
 
   public Pose3d getRedOffsetPose() {
@@ -122,7 +123,7 @@ public enum OffsetTags {
   }
 
   public int getId() {
-    return GarageUtils.isRedAlliance() ? redId : blueId;
+    return blueId; // GarageUtils.isRedAlliance() ? redId : blueId;
   }
 
   public int getRedId() {
