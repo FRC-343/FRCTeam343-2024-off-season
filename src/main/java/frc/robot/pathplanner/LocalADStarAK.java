@@ -1,4 +1,4 @@
-package frc.util;
+package frc.robot.pathplanner;
 
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;

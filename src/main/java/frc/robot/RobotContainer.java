@@ -55,6 +55,10 @@ public class RobotContainer {
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
+  //   public final DriverAutomationFactory m_automation = new DriverAutomationFactory(
+  //     controller,
+  //     drive);
+
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
   private final LoggedDashboardNumber flywheelSpeedInput =
