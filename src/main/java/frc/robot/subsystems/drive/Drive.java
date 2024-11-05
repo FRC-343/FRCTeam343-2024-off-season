@@ -26,12 +26,10 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.bobot_state.BobotState;
 import frc.robot.pathplanner.LocalADStarAK;
-import frc.robot.subsystems.vision.VisionSubsystem.VisionMeasurement;
 import frc.util.GeomUtils;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -90,22 +88,23 @@ public class Drive extends SubsystemBase {
   private final List<SwerveDrivePoseEstimator> m_poseEstimators =
       List.of(m_combinedPoseEstimator, m_visionOnlyPoseEstimator, m_wheelOnlyPoseEstimator);
 
-  private final Supplier<VisionMeasurement> m_visionMeasurementSupplier;
+  // private final Supplier<VisionMeasurement> m_visionMeasurementSupplier;
 
   public Drive(
       GyroIO gyroIO,
       ModuleIO flModuleIO,
       ModuleIO frModuleIO,
       ModuleIO blModuleIO,
-      ModuleIO brModuleIO,
-      Supplier<VisionMeasurement> visionMeasurementSupplier) {
+      ModuleIO brModuleIO
+      // Supplier<VisionMeasurement> visionMeasurementSupplier
+      ) {
     this.gyroIO = gyroIO;
     modules[0] = new Module(flModuleIO, 0);
     modules[1] = new Module(frModuleIO, 1);
     modules[2] = new Module(blModuleIO, 2);
     modules[3] = new Module(brModuleIO, 3);
 
-    m_visionMeasurementSupplier = visionMeasurementSupplier;
+    // m_visionMeasurementSupplier = visionMeasurementSupplier;
 
     // Start threads (no-op for each if no signals have been created)
     PhoenixOdometryThread.getInstance().start();
@@ -154,22 +153,22 @@ public class Drive extends SubsystemBase {
                 this));
   }
 
-  private void addVisionMeasurements() {
-    // Pose2d currentPose = getPose();
+  // private void addVisionMeasurements() {
+  //   // Pose2d currentPose = getPose();
 
-    VisionMeasurement visionMeasurement;
-    while ((visionMeasurement = m_visionMeasurementSupplier.get()) != null) {
-      Pose2d visionPose = visionMeasurement.estimation().estimatedPose.toPose2d();
-      // Ignore the vision pose's rotation
-      // Pose2d visionPoseWithoutRotation = new Pose2d(visionPose.getTranslation(),
-      // currentPose.getRotation());
-      double timestampSeconds = visionMeasurement.estimation().timestampSeconds;
-      var confidence = visionMeasurement.confidence();
+  //   VisionMeasurement visionMeasurement;
+  //   while ((visionMeasurement = m_visionMeasurementSupplier.get()) != null) {
+  //     Pose2d visionPose = visionMeasurement.estimation().estimatedPose.toPose2d();
+  //     // Ignore the vision pose's rotation
+  //     // Pose2d visionPoseWithoutRotation = new Pose2d(visionPose.getTranslation(),
+  //     // currentPose.getRotation());
+  //     double timestampSeconds = visionMeasurement.estimation().timestampSeconds;
+  //     var confidence = visionMeasurement.confidence();
 
-      m_combinedPoseEstimator.addVisionMeasurement(visionPose, timestampSeconds, confidence);
-      m_visionOnlyPoseEstimator.addVisionMeasurement(visionPose, timestampSeconds, confidence);
-    }
-  }
+  //     m_combinedPoseEstimator.addVisionMeasurement(visionPose, timestampSeconds, confidence);
+  //     m_visionOnlyPoseEstimator.addVisionMeasurement(visionPose, timestampSeconds, confidence);
+  //   }
+  // }
 
   public void periodic() {
 
@@ -207,7 +206,9 @@ public class Drive extends SubsystemBase {
       // Read wheel positions and deltas from each module
       SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
       SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[4];
-      for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
+      for (int moduleIndex = 0;
+          moduleIndex < 4 && sampleCount == sampleTimestamps.length;
+          moduleIndex++) {
         modulePositions[moduleIndex] = modules[moduleIndex].getOdometryPositions()[i];
         moduleDeltas[moduleIndex] =
             new SwerveModulePosition(
@@ -229,8 +230,8 @@ public class Drive extends SubsystemBase {
 
       m_combinedPoseEstimator.update(m_trackedRotation, modulePositions);
       m_wheelOnlyPoseEstimator.update(m_trackedRotation, modulePositions);
-      addVisionMeasurements();
-
+      // addVisionMeasurements();
+      //
       Pose2d combinedPose = getPose();
       Pose2d visionOnlyPose = m_visionOnlyPoseEstimator.getEstimatedPosition();
       Pose2d wheelOnlyPose = m_wheelOnlyPoseEstimator.getEstimatedPosition();

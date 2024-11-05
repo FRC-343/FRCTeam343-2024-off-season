@@ -55,7 +55,7 @@ public class PhoenixOdometryThread extends Thread {
     Drive.odometryLock.lock();
     try {
       isCANFD = CANBus.isNetworkFD(device.getNetwork());
-      BaseStatusSignal[] newSignals = new BaseStatusSignal[signals.length + 1];
+      BaseStatusSignal[] newSignals = new BaseStatusSignal[signals.length + 20];
       System.arraycopy(signals, 0, newSignals, 0, signals.length);
       newSignals[signals.length] = signal;
       signals = newSignals;

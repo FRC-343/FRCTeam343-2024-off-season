@@ -56,27 +56,27 @@ public class ModuleIOTalonFX implements ModuleIO {
   public ModuleIOTalonFX(int index) {
     switch (index) {
       case 0:
-        driveTalon = new TalonFX(0);
-        turnTalon = new TalonFX(1);
-        cancoder = new CANcoder(2);
-        absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
-        break;
-      case 1:
-        driveTalon = new TalonFX(3);
-        turnTalon = new TalonFX(4);
-        cancoder = new CANcoder(5);
-        absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
-        break;
-      case 2:
-        driveTalon = new TalonFX(6);
-        turnTalon = new TalonFX(7);
+        driveTalon = new TalonFX(11, "busman");
+        turnTalon = new TalonFX(3);
         cancoder = new CANcoder(8);
         absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
         break;
+      case 1:
+        driveTalon = new TalonFX(12, "busman");
+        turnTalon = new TalonFX(1);
+        cancoder = new CANcoder(6);
+        absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
+        break;
+      case 2:
+        driveTalon = new TalonFX(13, "busman");
+        turnTalon = new TalonFX(4);
+        cancoder = new CANcoder(7);
+        absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
+        break;
       case 3:
-        driveTalon = new TalonFX(9);
-        turnTalon = new TalonFX(10);
-        cancoder = new CANcoder(11);
+        driveTalon = new TalonFX(14, "busman");
+        turnTalon = new TalonFX(2);
+        cancoder = new CANcoder(5);
         absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
         break;
       default:
@@ -170,8 +170,8 @@ public class ModuleIOTalonFX implements ModuleIO {
             .map((Double value) -> Rotation2d.fromRotations(value / TURN_GEAR_RATIO))
             .toArray(Rotation2d[]::new);
     timestampQueue.clear();
-    drivePositionQueue.clear();
-    turnPositionQueue.clear();
+    // drivePositionQueue.clear();
+    // turnPositionQueue.clear();
   }
 
   @Override
