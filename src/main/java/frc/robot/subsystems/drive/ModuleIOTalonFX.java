@@ -53,7 +53,7 @@ public class ModuleIOTalonFX implements ModuleIO {
   private final boolean isTurnMotorInverted = true;
   private final Rotation2d absoluteEncoderOffset;
 
-  public ModuleIOTalonFX(int index) {
+  public ModuleIOTalonFX(int index) { // Change the order in Drive.java staring at line 102
     switch (index) {
       case 0:
         driveTalon = new TalonFX(11, "busman");
