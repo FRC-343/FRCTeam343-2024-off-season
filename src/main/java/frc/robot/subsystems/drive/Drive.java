@@ -172,7 +172,7 @@ public class Drive extends SubsystemBase {
 
   public void periodic() {
 
-    for (int i = 0; i < modules.length; i++) {
+    for (int i = 0; i < 4; i++) {
       modules[i].updateInputs(m_moduleInputs[i]);
       Logger.processInputs("Drive/Module" + Integer.toString(i), m_moduleInputs[i]);
     }
@@ -204,8 +204,8 @@ public class Drive extends SubsystemBase {
     int sampleCount = sampleTimestamps.length;
     for (int i = 0; i < sampleCount; i++) {
       // Read wheel positions and deltas from each module
-      SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
-      SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[4];
+      SwerveModulePosition[] modulePositions = new SwerveModulePosition[i];
+      SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[i];
       for (int moduleIndex = 0;
           moduleIndex < 4 && sampleCount == sampleTimestamps.length;
           moduleIndex++) {
@@ -238,7 +238,7 @@ public class Drive extends SubsystemBase {
 
       Pose2d predictedPose = getPredictedPose();
 
-      BobotState.updateRobotPose(combinedPose);
+      BobotState.updateRobotPose(wheelOnlyPose);
       BobotState.updatePredictedPose(predictedPose);
 
       Logger.recordOutput("Drive/Velocity", getVelocitySpeeds());
@@ -349,7 +349,7 @@ public class Drive extends SubsystemBase {
   /** Returns the module positions (turn angles and drive positions) for all of the modules. */
   private SwerveModulePosition[] getModulePositions() {
     SwerveModulePosition[] positions = new SwerveModulePosition[modules.length];
-    for (int i = 0; i < m_moduleInputs.length; i++) {
+    for (int i = 0; i < 4; i++) {
       positions[i] = m_moduleInputs[i].position;
     }
     return positions;
@@ -358,6 +358,7 @@ public class Drive extends SubsystemBase {
   /** Returns the current odometry pose. */
   @AutoLogOutput(key = "Odometry/Robot")
   public Pose2d getPose() {
+    // return Module.getAngle();
     return poseEstimator.getEstimatedPosition();
   }
 
@@ -377,9 +378,9 @@ public class Drive extends SubsystemBase {
    * @param visionPose The pose of the robot as measured by the vision camera.
    * @param timestamp The timestamp of the vision measurement in seconds.
    */
-  public void addVisionMeasurement(Pose2d visionPose, double timestamp) {
-    poseEstimator.addVisionMeasurement(visionPose, timestamp);
-  }
+  // public void addVisionMeasurement(Pose2d visionPose, double timestamp) {
+  //   poseEstimator.addVisionMeasurement(visionPose, timestamp);
+  // }
 
   /** Returns the maximum linear speed in meters per sec. */
   public double getMaxLinearSpeedMetersPerSec() {
