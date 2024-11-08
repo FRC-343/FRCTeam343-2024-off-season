@@ -170,9 +170,26 @@ public class Drive extends SubsystemBase {
   //   }
   // }
 
+  public SwerveModuleState[] getModuleStates() {
+    SwerveModuleState[] states = new SwerveModuleState[modules.length];
+    for (int i = 0; i < m_moduleInputs.length; i++) {
+        states[i] = m_moduleInputs[i].state;
+    }
+    return states;
+}
+
+public SwerveModulePosition[] getModulePositions() {
+    SwerveModulePosition[] positions = new SwerveModulePosition[modules.length];
+    for (int i = 0; i < m_moduleInputs.length; i++) {
+        positions[i] = m_moduleInputs[i].position;
+    }
+    return positions;
+}
+
+
   public void periodic() {
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < modules.length; i++) {
       modules[i].updateInputs(m_moduleInputs[i]);
       Logger.processInputs("Drive/Module" + Integer.toString(i), m_moduleInputs[i]);
     }
@@ -198,14 +215,17 @@ public class Drive extends SubsystemBase {
       Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
     }
 
+            SwerveModuleState[] states = getModuleStates();
+        SwerveModulePosition[] positions = getModulePositions();
+
     // Update odometry
     double[] sampleTimestamps =
         modules[0].getOdometryTimestamps(); // All signals are sampled together
     int sampleCount = sampleTimestamps.length;
     for (int i = 0; i < sampleCount; i++) {
       // Read wheel positions and deltas from each module
-      SwerveModulePosition[] modulePositions = new SwerveModulePosition[i];
-      SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[i];
+      SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
+      SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[4];
       for (int moduleIndex = 0;
           moduleIndex < 4 && sampleCount == sampleTimestamps.length;
           moduleIndex++) {
@@ -228,8 +248,8 @@ public class Drive extends SubsystemBase {
         rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
       }
 
-      m_combinedPoseEstimator.update(m_trackedRotation, modulePositions);
-      m_wheelOnlyPoseEstimator.update(m_trackedRotation, modulePositions);
+      m_combinedPoseEstimator.update(m_trackedRotation, positions);
+      m_wheelOnlyPoseEstimator.update(m_trackedRotation, positions);
       // addVisionMeasurements();
       //
       Pose2d combinedPose = getPose();
@@ -259,7 +279,7 @@ public class Drive extends SubsystemBase {
           "Odometry/Predicted/RotationDeg", predictedPose.getRotation().getDegrees());
 
       // Apply update
-      poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
+      poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, positions);
     }
   }
 
@@ -337,23 +357,23 @@ public class Drive extends SubsystemBase {
   }
 
   /** Returns the module states (turn angles and drive velocities) for all of the modules. */
-  @AutoLogOutput(key = "SwerveStates/Measured")
-  private SwerveModuleState[] getModuleStates() {
-    SwerveModuleState[] states = new SwerveModuleState[4];
-    for (int i = 0; i < 4; i++) {
-      states[i] = modules[i].getState();
-    }
-    return states;
-  }
+  // @AutoLogOutput(key = "SwerveStates/Measured")
+  // private SwerveModuleState[] getModuleStates() {
+  //   SwerveModuleState[] states = new SwerveModuleState[4];
+  //   for (int i = 0; i < 4; i++) {
+  //     states[i] = modules[i].getState();
+  //   }
+  //   return states;
+  // }
 
-  /** Returns the module positions (turn angles and drive positions) for all of the modules. */
-  private SwerveModulePosition[] getModulePositions() {
-    SwerveModulePosition[] positions = new SwerveModulePosition[modules.length];
-    for (int i = 0; i < 4; i++) {
-      positions[i] = m_moduleInputs[i].position;
-    }
-    return positions;
-  }
+  // /** Returns the module positions (turn angles and drive positions) for all of the modules. */
+  // private SwerveModulePosition[] getModulePositions() {
+  //   SwerveModulePosition[] positions = new SwerveModulePosition[modules.length];
+  //   for (int i = 0; i < 4; i++) {
+  //     positions[i] = m_moduleInputs[i].position;
+  //   }
+  //   return positions;
+  // }
 
   /** Returns the current odometry pose. */
   @AutoLogOutput(key = "Odometry/Robot")
