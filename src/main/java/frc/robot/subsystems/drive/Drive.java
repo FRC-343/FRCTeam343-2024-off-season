@@ -75,15 +75,15 @@ public class Drive extends SubsystemBase {
   private Rotation2d m_trackedRotation = new Rotation2d();
   private final SwerveDrivePoseEstimator m_combinedPoseEstimator =
       new SwerveDrivePoseEstimator(
-          DriveConstants.kDriveKinematics, m_trackedRotation, getModulePositions(), new Pose2d());
+          kinematics, m_trackedRotation, getModulePositions(), new Pose2d());
 
   private final SwerveDrivePoseEstimator m_visionOnlyPoseEstimator =
       new SwerveDrivePoseEstimator(
-          DriveConstants.kDriveKinematics, m_trackedRotation, getModulePositions(), new Pose2d());
+          kinematics, m_trackedRotation, getModulePositions(), new Pose2d());
 
   private final SwerveDrivePoseEstimator m_wheelOnlyPoseEstimator =
       new SwerveDrivePoseEstimator(
-          DriveConstants.kDriveKinematics, m_trackedRotation, getModulePositions(), new Pose2d());
+          kinematics, m_trackedRotation, getModulePositions(), new Pose2d());
 
   private final List<SwerveDrivePoseEstimator> m_poseEstimators =
       List.of(m_combinedPoseEstimator, m_visionOnlyPoseEstimator, m_wheelOnlyPoseEstimator);
@@ -173,19 +173,18 @@ public class Drive extends SubsystemBase {
   public SwerveModuleState[] getModuleStates() {
     SwerveModuleState[] states = new SwerveModuleState[modules.length];
     for (int i = 0; i < m_moduleInputs.length; i++) {
-        states[i] = m_moduleInputs[i].state;
+      states[i] = m_moduleInputs[i].state;
     }
     return states;
-}
+  }
 
-public SwerveModulePosition[] getModulePositions() {
+  public SwerveModulePosition[] getModulePositions() {
     SwerveModulePosition[] positions = new SwerveModulePosition[modules.length];
     for (int i = 0; i < m_moduleInputs.length; i++) {
-        positions[i] = m_moduleInputs[i].position;
+      positions[i] = m_moduleInputs[i].position;
     }
     return positions;
-}
-
+  }
 
   public void periodic() {
 
@@ -215,8 +214,10 @@ public SwerveModulePosition[] getModulePositions() {
       Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
     }
 
-            SwerveModuleState[] states = getModuleStates();
-        SwerveModulePosition[] positions = getModulePositions();
+    SwerveModuleState[] states = getModuleStates();
+    SwerveModulePosition[] positions = getModulePositions();
+
+    Logger.recordOutput("SwereveStates/Measued", states);
 
     // Update odometry
     double[] sampleTimestamps =
@@ -279,12 +280,20 @@ public SwerveModulePosition[] getModulePositions() {
           "Odometry/Predicted/RotationDeg", predictedPose.getRotation().getDegrees());
 
       // Apply update
-      poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, positions);
+      m_wheelOnlyPoseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, positions);
     }
   }
 
   private ChassisSpeeds getVelocitySpeeds() {
     return DriveConstants.kDriveKinematics.toChassisSpeeds(getModuleStates());
+  }
+
+  public void zeroHeading() {
+    gyroIO.zero();
+    // If no gyro is connected we have to manually reset our tracked rotation.
+    if (!gyroInputs.connected) {
+      m_trackedRotation = new Rotation2d();
+    }
   }
 
   private Twist2d getVelocityTwist() {
@@ -379,7 +388,7 @@ public SwerveModulePosition[] getModulePositions() {
   @AutoLogOutput(key = "Odometry/Robot")
   public Pose2d getPose() {
     // return Module.getAngle();
-    return poseEstimator.getEstimatedPosition();
+    return m_combinedPoseEstimator.getEstimatedPosition();
   }
 
   /** Returns the current odometry rotation. */
@@ -389,7 +398,10 @@ public SwerveModulePosition[] getModulePositions() {
 
   /** Resets the current odometry pose. */
   public void setPose(Pose2d pose) {
-    poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
+    m_poseEstimators.forEach(
+        poseEstimator -> {
+          poseEstimator.resetPosition(m_trackedRotation, getModulePositions(), pose);
+        });
   }
 
   /**
