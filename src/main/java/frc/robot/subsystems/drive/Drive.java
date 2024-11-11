@@ -99,10 +99,10 @@ public class Drive extends SubsystemBase {
       // Supplier<VisionMeasurement> visionMeasurementSupplier
       ) {
     this.gyroIO = gyroIO;
-    modules[0] = new Module(flModuleIO, 0);
-    modules[1] = new Module(frModuleIO, 1); // Change this order instead of re-instantiating
-    modules[2] = new Module(blModuleIO, 2);
-    modules[3] = new Module(brModuleIO, 3);
+    modules[0] = new Module(flModuleIO, 3);
+    modules[1] = new Module(frModuleIO, 2); // Change this order instead of re-instantiating
+    modules[2] = new Module(blModuleIO, 1); // 6
+    modules[3] = new Module(brModuleIO, 0); // 8
 
     // m_visionMeasurementSupplier = visionMeasurementSupplier;
 
@@ -171,9 +171,10 @@ public class Drive extends SubsystemBase {
   // }
 
   public SwerveModuleState[] getModuleStates() {
+
     SwerveModuleState[] states = new SwerveModuleState[modules.length];
     for (int i = 0; i < m_moduleInputs.length; i++) {
-      states[i] = m_moduleInputs[i].state;
+      states[i] = modules[i].getState();
     }
     return states;
   }
@@ -188,15 +189,19 @@ public class Drive extends SubsystemBase {
 
   public void periodic() {
 
+    SwerveModuleState[] states = getModuleStates();
+    SwerveModulePosition[] positions = getModulePositions();
+
+    Logger.recordOutput("SwereveStates/Measued", states);
     for (int i = 0; i < modules.length; i++) {
       modules[i].updateInputs(m_moduleInputs[i]);
       Logger.processInputs("Drive/Module" + Integer.toString(i), m_moduleInputs[i]);
     }
 
-    odometryLock.lock(); // Prevents odometry updates while reading data
+    // odometryLock.lock(); // Prevents odometry updates while reading data
     gyroIO.updateInputs(gyroInputs);
 
-    odometryLock.unlock();
+    // odometryLock.unlock();
     Logger.processInputs("Drive/Gyro", gyroInputs);
     for (var module : modules) {
       module.periodic();
@@ -213,11 +218,6 @@ public class Drive extends SubsystemBase {
       Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
       Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
     }
-
-    SwerveModuleState[] states = getModuleStates();
-    SwerveModulePosition[] positions = getModulePositions();
-
-    Logger.recordOutput("SwereveStates/Measued", states);
 
     // Update odometry
     double[] sampleTimestamps =
@@ -327,8 +327,10 @@ public class Drive extends SubsystemBase {
 
     // Send setpoints to modules
     SwerveModuleState[] optimizedSetpointStates = new SwerveModuleState[4];
+
     for (int i = 0; i < 4; i++) {
       // The module returns the optimized state, useful for logging
+
       optimizedSetpointStates[i] = modules[i].runSetpoint(setpointStates[i]);
     }
 
