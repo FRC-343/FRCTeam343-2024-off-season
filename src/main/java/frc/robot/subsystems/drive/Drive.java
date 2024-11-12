@@ -193,10 +193,6 @@ public class Drive extends SubsystemBase {
     SwerveModulePosition[] positions = getModulePositions();
 
     Logger.recordOutput("SwereveStates/Measued", states);
-    for (int i = 0; i < modules.length; i++) {
-      modules[i].updateInputs(m_moduleInputs[i]);
-      Logger.processInputs("Drive/Module" + Integer.toString(i), m_moduleInputs[i]);
-    }
 
     // odometryLock.lock(); // Prevents odometry updates while reading data
     gyroIO.updateInputs(gyroInputs);
