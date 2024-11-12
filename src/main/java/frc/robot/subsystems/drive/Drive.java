@@ -187,8 +187,8 @@ public class Drive extends SubsystemBase {
     return positions;
   }
 
+  @Override
   public void periodic() {
-
     SwerveModuleState[] states = getModuleStates();
     SwerveModulePosition[] positions = getModulePositions();
 

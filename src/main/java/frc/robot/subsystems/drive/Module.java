@@ -67,8 +67,10 @@ public class Module {
   public void periodic() {
     Logger.processInputs("Drive/Module" + Integer.toString(index), inputs);
 
-    // inputs.state = getState();
-    // inputs.position = getPosition();
+    updateInputs(inputs);
+
+    inputs.state = getState();
+    inputs.position = getPosition();
 
     // On first cycle, reset relative turn encoder
     // Wait until absolute angle is nonzero in case it wasn't initialized yet
@@ -120,7 +122,7 @@ public class Module {
     // Update setpoints, controllers run in "periodic"
     angleSetpoint = optimizedState.angle;
     speedSetpoint = optimizedState.speedMetersPerSecond;
-
+    getAngle();
     return optimizedState;
   }
 
