@@ -11,6 +11,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import java.util.Queue;
 
@@ -59,25 +60,25 @@ public class ModuleIOTalonFX implements ModuleIO {
         driveTalon = new TalonFX(11, "busman");
         turnTalon = new TalonFX(3);
         cancoder = new CANcoder(8);
-        absoluteEncoderOffset = new Rotation2d(0.3); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
         break;
       case 1:
         driveTalon = new TalonFX(12, "busman");
         turnTalon = new TalonFX(1);
         cancoder = new CANcoder(6);
-        absoluteEncoderOffset = new Rotation2d(0.3); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
         break;
       case 2:
         driveTalon = new TalonFX(13, "busman");
         turnTalon = new TalonFX(4);
         cancoder = new CANcoder(7);
-        absoluteEncoderOffset = new Rotation2d(0.187); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
         break;
       case 3:
         driveTalon = new TalonFX(14, "busman");
         turnTalon = new TalonFX(2);
         cancoder = new CANcoder(5);
-        absoluteEncoderOffset = new Rotation2d(0.3); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
         break;
       default:
         throw new RuntimeException("Invalid module index");
@@ -173,8 +174,8 @@ public class ModuleIOTalonFX implements ModuleIO {
     // drivePositionQueue.clear();
     // turnPositionQueue.clear();
 
-    // Rotation2d angle = inputs.turnPosition;
-    // inputs.state = new SwerveModuleState(inputs.driveVelocityRadPerSec, angle);
+    Rotation2d angle = inputs.turnPosition;
+    inputs.state = new SwerveModuleState(inputs.driveVelocityRadPerSec, angle);
     // inputs.position = new SwerveModulePosition(inputs.drivePositionRad, angle);
   }
 

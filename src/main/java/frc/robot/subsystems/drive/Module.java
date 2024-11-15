@@ -24,6 +24,7 @@ public class Module {
   private Double speedSetpoint = null; // Setpoint for closed loop control, null for open loop
   private Rotation2d turnRelativeOffset = null; // Relative + Offset = Absolute
   private SwerveModulePosition[] odometryPositions = new SwerveModulePosition[] {};
+  private SwerveModuleState modstates = new SwerveModuleState();
 
   public Module(ModuleIO io, int index) {
     this.io = io;
@@ -60,23 +61,21 @@ public class Module {
    *
    * @param m_moduleInputs
    */
-  public void updateInputs(ModuleIOInputsAutoLogged m_moduleInputs) {
+  public void updateInputs(ModuleIOInputsAutoLogged inputs) {
     io.updateInputs(inputs);
   }
 
   public void periodic() {
-    Logger.processInputs("Drive/Module" + Integer.toString(index), inputs);
-
     updateInputs(inputs);
+    Logger.processInputs("Drive/Module" + Integer.toString(index), inputs);
 
     // On first cycle, reset relative turn encoder
     // Wait until absolute angle is nonzero in case it wasn't initialized yet
     if (turnRelativeOffset == null && inputs.turnAbsolutePosition.getRadians() != 0.0) {
       turnRelativeOffset = inputs.turnAbsolutePosition.minus(inputs.turnPosition);
     }
-    if (inputs.turnPosition != null) {
-      
-    }
+    if (inputs.turnPosition != null) {}
+
     // Run closed loop turn control
     if (angleSetpoint != null) {
       io.setTurnVoltage(
@@ -104,6 +103,7 @@ public class Module {
     int sampleCount = inputs.odometryTimestamps.length; // All signals are sampled together
     odometryPositions = new SwerveModulePosition[sampleCount];
     for (int i = 0; i < sampleCount && i < inputs.odometryDrivePositionsRad.length; i++) {
+      modstates = inputs.state;
       double positionMeters = inputs.odometryDrivePositionsRad[i] * WHEEL_RADIUS;
       Rotation2d angle =
           inputs.odometryTurnPositions[i].plus(
@@ -156,7 +156,7 @@ public class Module {
     if (turnRelativeOffset == null) {
       return new Rotation2d();
     } else {
-      return inputs.turnPosition.plus(turnRelativeOffset);
+      return inputs.turnPosition;
     }
   }
 
@@ -177,7 +177,8 @@ public class Module {
 
   /** Returns the module state (turn angle and drive velocity). */
   public SwerveModuleState getState() {
-    return new SwerveModuleState(getVelocityMetersPerSec(), getAngle());
+    return modstates;
+    // return new SwerveModuleState(getVelocityMetersPerSec(), getAngle());
   }
 
   /** Returns the module positions received this cycle. */
