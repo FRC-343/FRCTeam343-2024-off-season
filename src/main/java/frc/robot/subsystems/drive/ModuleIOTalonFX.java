@@ -48,8 +48,9 @@ public class ModuleIOTalonFX implements ModuleIO {
   private final StatusSignal<Double> turnCurrent;
 
   // Gear ratios for SDS MK4i L2, adjust as necessary
-  private final double DRIVE_GEAR_RATIO = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
-  private final double TURN_GEAR_RATIO = 150.0 / 7.0;
+  private final double DRIVE_GEAR_RATIO = (50.0 / 16.0) * (17.0 / 27.0) * (45.0 / 15.0);
+  private final double TURN_GEAR_RATIO = (50.0 / 16.0) * (60.0 / 10.0);
+  // 150.0 / 7.0;
 
   private final boolean isTurnMotorInverted = true;
   private final Rotation2d absoluteEncoderOffset;
@@ -57,28 +58,28 @@ public class ModuleIOTalonFX implements ModuleIO {
   public ModuleIOTalonFX(int index) { // Change the order in Drive.java staring at line 102
     switch (index) {
       case 0:
-        driveTalon = new TalonFX(11, "busman");
+        driveTalon = new TalonFX(11, "busman"); // back right
         turnTalon = new TalonFX(3);
         cancoder = new CANcoder(8);
-        absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(Math.PI / 2); // MUST BE CALIBRATED
         break;
       case 1:
-        driveTalon = new TalonFX(12, "busman");
+        driveTalon = new TalonFX(12, "busman"); // back left
         turnTalon = new TalonFX(1);
         cancoder = new CANcoder(6);
-        absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(-1); // MUST BE CALIBRATED
         break;
       case 2:
-        driveTalon = new TalonFX(13, "busman");
+        driveTalon = new TalonFX(13, "busman"); // Front right
         turnTalon = new TalonFX(4);
         cancoder = new CANcoder(7);
-        absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(Math.PI); // MUST BE CALIBRATED
         break;
       case 3:
-        driveTalon = new TalonFX(14, "busman");
+        driveTalon = new TalonFX(14, "busman"); // front left
         turnTalon = new TalonFX(2);
         cancoder = new CANcoder(5);
-        absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(-Math.PI / 2); // MUST BE CALIBRATED
         break;
       default:
         throw new RuntimeException("Invalid module index");
@@ -132,16 +133,9 @@ public class ModuleIOTalonFX implements ModuleIO {
 
   @Override
   public void updateInputs(ModuleIOInputs inputs) {
+    BaseStatusSignal.refreshAll(drivePosition, driveVelocity, driveAppliedVolts, driveCurrent);
     BaseStatusSignal.refreshAll(
-        drivePosition,
-        driveVelocity,
-        driveAppliedVolts,
-        driveCurrent,
-        turnAbsolutePosition,
-        turnPosition,
-        turnVelocity,
-        turnAppliedVolts,
-        turnCurrent);
+        turnAbsolutePosition, turnPosition, turnVelocity, turnAppliedVolts, turnCurrent);
 
     inputs.drivePositionRad =
         Units.rotationsToRadians(drivePosition.getValueAsDouble()) / DRIVE_GEAR_RATIO;

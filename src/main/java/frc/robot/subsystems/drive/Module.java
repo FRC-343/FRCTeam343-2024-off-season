@@ -37,7 +37,7 @@ public class Module {
       case REPLAY:
         driveFeedforward = new SimpleMotorFeedforward(0.1, 0.13);
         driveFeedback = new PIDController(0.05, 0.0, 0.0);
-        turnFeedback = new PIDController(0.5, 0.0, 0.0);
+        turnFeedback = new PIDController(1.5, 0.0, 0.0);
         break;
       case SIM:
         driveFeedforward = new SimpleMotorFeedforward(0.0, 0.13);
@@ -103,7 +103,6 @@ public class Module {
     int sampleCount = inputs.odometryTimestamps.length; // All signals are sampled together
     odometryPositions = new SwerveModulePosition[sampleCount];
     for (int i = 0; i < sampleCount && i < inputs.odometryDrivePositionsRad.length; i++) {
-      modstates = inputs.state;
       double positionMeters = inputs.odometryDrivePositionsRad[i] * WHEEL_RADIUS;
       Rotation2d angle =
           inputs.odometryTurnPositions[i].plus(
@@ -177,8 +176,8 @@ public class Module {
 
   /** Returns the module state (turn angle and drive velocity). */
   public SwerveModuleState getState() {
-    return modstates;
-    // return new SwerveModuleState(getVelocityMetersPerSec(), getAngle());
+    // return modstates;
+    return new SwerveModuleState(getVelocityMetersPerSec(), getAngle());
   }
 
   /** Returns the module positions received this cycle. */
