@@ -67,17 +67,17 @@ public class ModuleIOTalonFX implements ModuleIO {
         driveTalon = new TalonFX(12, "busman"); // back left
         turnTalon = new TalonFX(1);
         cancoder = new CANcoder(6);
-        absoluteEncoderOffset = new Rotation2d(-1); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(-Math.PI); // MUST BE CALIBRATED
         break;
       case 2:
         driveTalon = new TalonFX(13, "busman"); // Front right
-        turnTalon = new TalonFX(4);
+        turnTalon = new TalonFX(2);
         cancoder = new CANcoder(7);
         absoluteEncoderOffset = new Rotation2d(Math.PI); // MUST BE CALIBRATED
         break;
       case 3:
         driveTalon = new TalonFX(14, "busman"); // front left
-        turnTalon = new TalonFX(2);
+        turnTalon = new TalonFX(4);
         cancoder = new CANcoder(5);
         absoluteEncoderOffset = new Rotation2d(-Math.PI / 2); // MUST BE CALIBRATED
         break;
