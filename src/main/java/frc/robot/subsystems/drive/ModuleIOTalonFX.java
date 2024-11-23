@@ -49,8 +49,8 @@ public class ModuleIOTalonFX implements ModuleIO {
 
   // Gear ratios for SDS MK4i L2, adjust as necessary
   private final double DRIVE_GEAR_RATIO = (50.0 / 16.0) * (17.0 / 27.0) * (45.0 / 15.0);
-  private final double TURN_GEAR_RATIO = (50.0 / 16.0) * (60.0 / 10.0);
-  // 150.0 / 7.0;
+  private final double TURN_GEAR_RATIO = // (50.0 / 16.0) * (60.0 / 10.0);
+      150.0 / 8.0;
 
   private final boolean isTurnMotorInverted = true;
   private final Rotation2d absoluteEncoderOffset;
@@ -61,35 +61,42 @@ public class ModuleIOTalonFX implements ModuleIO {
         driveTalon = new TalonFX(11, "busman"); // back right
         turnTalon = new TalonFX(3);
         cancoder = new CANcoder(8);
-        absoluteEncoderOffset = new Rotation2d(Math.PI / 2); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(.34); // MUST BE CALIBRATED offset is 0.451904296875
         break;
       case 1:
         driveTalon = new TalonFX(12, "busman"); // back left
         turnTalon = new TalonFX(1);
         cancoder = new CANcoder(6);
-        absoluteEncoderOffset = new Rotation2d(-Math.PI); // MUST BE CALIBRATED
+        absoluteEncoderOffset =
+            new Rotation2d(-1.7); // MUST BE CALIBRATED  offset is 0.277587890625.
         break;
       case 2:
         driveTalon = new TalonFX(13, "busman"); // Front right
         turnTalon = new TalonFX(2);
         cancoder = new CANcoder(7);
-        absoluteEncoderOffset = new Rotation2d(Math.PI); // MUST BE CALIBRATED
+        absoluteEncoderOffset =
+            new Rotation2d(-1.94); // MUST BE CALIBRATED   offset is 0.31591796875.
         break;
       case 3:
         driveTalon = new TalonFX(14, "busman"); // front left
         turnTalon = new TalonFX(4);
         cancoder = new CANcoder(5);
-        absoluteEncoderOffset = new Rotation2d(-Math.PI / 2); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(-.78); // MUST BE CALIBRATED  offset 0.11669921875
         break;
       default:
         throw new RuntimeException("Invalid module index");
     }
 
-    var driveConfig = new TalonFXConfiguration();
-    driveConfig.CurrentLimits.SupplyCurrentLimit = 40.0;
-    driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-    driveTalon.getConfigurator().apply(driveConfig);
-    setDriveBrakeMode(true);
+    // var driveConfig = new TalonFXConfiguration();
+    // driveConfig.CurrentLimits.SupplyCurrentLimit = 40.0;
+    // driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+
+    // // setDriveBrakeMode(true);
+
+    // if (index == 2) {
+    //   driveTalon.setInverted(true);
+    // }
+    // driveTalon.getConfigurator().apply(driveConfig);
 
     var turnConfig = new TalonFXConfiguration();
     turnConfig.CurrentLimits.SupplyCurrentLimit = 30.0;
@@ -175,6 +182,7 @@ public class ModuleIOTalonFX implements ModuleIO {
 
   @Override
   public void setDriveVoltage(double volts) {
+
     driveTalon.setControl(new VoltageOut(volts));
   }
 
