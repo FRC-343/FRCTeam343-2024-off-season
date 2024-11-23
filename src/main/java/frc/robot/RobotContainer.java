@@ -72,7 +72,7 @@ public class RobotContainer {
         // flywheel = new Flywheel(new FlywheelIOSparkMax());
         drive =
             new Drive(
-                new GyroIOPigeon2(true),
+                new GyroIOPigeon2(),
                 new ModuleIOTalonFX(0),
                 new ModuleIOTalonFX(1),
                 new ModuleIOTalonFX(2),
@@ -164,7 +164,7 @@ public class RobotContainer {
             drive,
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
-            () -> -controller.getRightX()));
+            () -> controller.getRightX()));
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     controller
         .b()

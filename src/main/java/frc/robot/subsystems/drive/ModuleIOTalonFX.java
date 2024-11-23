@@ -54,6 +54,7 @@ public class ModuleIOTalonFX implements ModuleIO {
 
   private final boolean isTurnMotorInverted = true;
   private final Rotation2d absoluteEncoderOffset;
+  private boolean isDriveMotorInverted;
 
   public ModuleIOTalonFX(int index) { // Change the order in Drive.java staring at line 102
     switch (index) {
@@ -62,6 +63,7 @@ public class ModuleIOTalonFX implements ModuleIO {
         turnTalon = new TalonFX(3);
         cancoder = new CANcoder(8);
         absoluteEncoderOffset = new Rotation2d(.34); // MUST BE CALIBRATED offset is 0.451904296875
+        isDriveMotorInverted = false;
         break;
       case 1:
         driveTalon = new TalonFX(12, "busman"); // back left
@@ -69,6 +71,7 @@ public class ModuleIOTalonFX implements ModuleIO {
         cancoder = new CANcoder(6);
         absoluteEncoderOffset =
             new Rotation2d(-1.7); // MUST BE CALIBRATED  offset is 0.277587890625.
+        isDriveMotorInverted = false;
         break;
       case 2:
         driveTalon = new TalonFX(13, "busman"); // Front right
@@ -76,12 +79,14 @@ public class ModuleIOTalonFX implements ModuleIO {
         cancoder = new CANcoder(7);
         absoluteEncoderOffset =
             new Rotation2d(-1.94); // MUST BE CALIBRATED   offset is 0.31591796875.
+        isDriveMotorInverted = true;
         break;
       case 3:
         driveTalon = new TalonFX(14, "busman"); // front left
         turnTalon = new TalonFX(4);
         cancoder = new CANcoder(5);
         absoluteEncoderOffset = new Rotation2d(-.78); // MUST BE CALIBRATED  offset 0.11669921875
+        isDriveMotorInverted = false;
         break;
       default:
         throw new RuntimeException("Invalid module index");
@@ -93,9 +98,6 @@ public class ModuleIOTalonFX implements ModuleIO {
 
     // // setDriveBrakeMode(true);
 
-    // if (index == 2) {
-    //   driveTalon.setInverted(true);
-    // }
     // driveTalon.getConfigurator().apply(driveConfig);
 
     var turnConfig = new TalonFXConfiguration();
@@ -194,7 +196,10 @@ public class ModuleIOTalonFX implements ModuleIO {
   @Override
   public void setDriveBrakeMode(boolean enable) {
     var config = new MotorOutputConfigs();
-    config.Inverted = InvertedValue.CounterClockwise_Positive;
+    config.Inverted =
+        isDriveMotorInverted
+            ? InvertedValue.Clockwise_Positive
+            : InvertedValue.CounterClockwise_Positive;
     config.NeutralMode = enable ? NeutralModeValue.Brake : NeutralModeValue.Coast;
     driveTalon.getConfigurator().apply(config);
   }
