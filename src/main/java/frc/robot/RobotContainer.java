@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.bobot_state.BobotState;
-import frc.robot.commands.DriveCommands;
+import frc.robot.commands.TeleopDrive;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -160,11 +160,13 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     drive.setDefaultCommand(
-        DriveCommands.joystickDrive(
+        TeleopDrive.asCommand(
             drive,
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
-            () -> controller.getRightX()));
+            () -> controller.getRightX(),
+            true,
+            true));
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     controller
         .b()

@@ -59,7 +59,7 @@ public class Drive extends SubsystemBase {
   private final SysIdRoutine sysId;
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
-  private Rotation2d rawGyroRotation = new Rotation2d();
+  // private Rotation2d rawGyroRotation = new Rotation2d();
   private SwerveModulePosition[] lastModulePositions = // For delta tracking
       new SwerveModulePosition[] {
         new SwerveModulePosition(),
@@ -68,8 +68,9 @@ public class Drive extends SubsystemBase {
         new SwerveModulePosition()
       };
 
-  private SwerveDrivePoseEstimator poseEstimator =
-      new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
+  // private SwerveDrivePoseEstimator poseEstimator =
+  //     new SwerveDrivePoseEstimator(kinematics, m_trackedRotation, lastModulePositions, new
+  // Pose2d());
 
   // Adding 4451 Odo code
   private Rotation2d m_trackedRotation = new Rotation2d();
@@ -238,11 +239,11 @@ public class Drive extends SubsystemBase {
       // Update gyro angle
       if (gyroInputs.connected) {
         // Use the real gyro angle
-        rawGyroRotation = gyroInputs.odometryYawPositions[i];
+        m_trackedRotation = gyroInputs.yawPosition;
       } else {
         // Use the angle delta from the kinematics and module deltas
         Twist2d twist = kinematics.toTwist2d(moduleDeltas);
-        rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
+        m_trackedRotation = m_trackedRotation.plus(new Rotation2d(twist.dtheta));
       }
 
       m_combinedPoseEstimator.update(m_trackedRotation, positions);
@@ -276,7 +277,7 @@ public class Drive extends SubsystemBase {
           "Odometry/Predicted/RotationDeg", predictedPose.getRotation().getDegrees());
 
       // Apply update
-      m_wheelOnlyPoseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, positions);
+      m_wheelOnlyPoseEstimator.updateWithTime(sampleTimestamps[i], m_trackedRotation, positions);
     }
   }
 
@@ -316,7 +317,8 @@ public class Drive extends SubsystemBase {
    * @param speeds Speeds in meters/sec
    */
   public void runVelocity(ChassisSpeeds speeds) {
-    // Calculate module setpoints
+
+    // // Calculate module setpoints
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, MAX_LINEAR_SPEED);
@@ -332,7 +334,11 @@ public class Drive extends SubsystemBase {
 
     // Log setpoint states
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
-    Logger.recordOutput("SwerveStates/SetpointsOptimized", optimizedSetpointStates);
+    // Logger.recordOutput("SwerveStates/SetpointsOptimized", optimizedSetpointStates);
+  }
+
+  public void runVelocityField(ChassisSpeeds speeds) {
+    runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, m_trackedRotation));
   }
 
   /** Stops the drive. */
