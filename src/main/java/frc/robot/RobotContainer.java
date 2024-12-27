@@ -29,6 +29,7 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.vision.VisionSubsystem;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
@@ -42,7 +43,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   //   private final Flywheel flywheel;
-  //   public final VisionSubsystem m_vision = new VisionSubsystem();
+  public VisionSubsystem m_vision = new VisionSubsystem();
   private final BobotState m_BobotState;
 
   // Controller
@@ -80,7 +81,7 @@ public class RobotContainer {
         // m_vision::pollLatestVisionMeasurement);
         // flywheel = new Flywheel(new FlywheelIOTalonFX());
         m_BobotState = new BobotState();
-        // m_vision = new VisionSubsystem();
+        m_vision = new VisionSubsystem();
 
         break;
 
@@ -96,7 +97,7 @@ public class RobotContainer {
         // m_vision::pollLatestVisionMeasurement);
         // flywheel = new Flywheel(new FlywheelIOSim());
         m_BobotState = new BobotState();
-        // m_vision = new VisionSubsystem();
+        m_vision = new VisionSubsystem();
 
         break;
 
@@ -112,7 +113,7 @@ public class RobotContainer {
         // m_vision::pollLatestVisionMeasurement);
         // flywheel = new Flywheel(new FlywheelIO() {});
         m_BobotState = new BobotState();
-        // m_vision = new VisionSubsystem();
+        m_vision = new VisionSubsystem();
         break;
     }
 

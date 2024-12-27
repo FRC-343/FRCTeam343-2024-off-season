@@ -38,7 +38,7 @@ public final class VisionConstants {
       List.of(
           // FL
           new VisionSource(
-              "FrontLeft",
+              "AprilTag1",
               new Transform3d(
                   new Translation3d(
                       Units.inchesToMeters(13.14), // forward+
